@@ -18,6 +18,9 @@ SORTING_ORDER = ["asc", "desc"]
 class Blog(Resource):
 
     @lru_cache(maxsize=128)
+    # @lru_cache is not ideal for Multiple workers for frameworks that use gunicorn, If given time I would use a a
+    # central cache store like memcached to avoid misses. More :
+    # https://krzysztofzuraw.com/blog/2017/gunicorn-lru-cache-pitfall
     def get(self):
         tags_string = request.args.get("tags", None, str)
         sort_by_param = request.args.get("sortBy", "id")  # id is default
@@ -47,6 +50,7 @@ class Blog(Resource):
     def post(self):
         return json.dumps({'success': False, 'message': 'POST Not Allowed'}), 405
 
+    # Private helper method to get posts
     def __get_posts(self, params):
         posts = list()
         unique_set = set()
@@ -59,6 +63,7 @@ class Blog(Resource):
                 logging.error(str("No Posts for the tag" + str(tag)))
         return posts
 
+    # Private helper method to parse each post
     def __parse_each_post(self, current_tag_resp, posts, unique_set):
         for each_post in current_tag_resp["posts"]:
             current_post_json_dmp = json.dumps(each_post)
@@ -66,6 +71,7 @@ class Blog(Resource):
                 posts.append(each_post)
                 unique_set.add(current_post_json_dmp)
 
+    # Private helper method to sort post list
     def __sort_posts(self, post_list, sort_by, ordering):
         is_reverse = False
         if ordering == "desc":
