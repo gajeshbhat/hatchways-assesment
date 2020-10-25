@@ -1,6 +1,5 @@
 import json
 import unittest
-
 from flask import Flask
 from flask_restful import Api
 from api.ping import Ping

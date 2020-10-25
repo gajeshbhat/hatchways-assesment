@@ -1,4 +1,6 @@
 import json
+import threading
+
 import requests
 import logging
 from api.errors import *
@@ -52,16 +54,28 @@ class Blog(Resource):
 
     # Private helper method to get posts
     def __get_posts(self, params):
+        request_threads = list()
         posts = list()
         unique_set = set()
         for tag in params:
-            payload = {'tag': str(tag)}
-            current_tag_resp = requests.get(EXTERNAL_SERVER_ENDPOINT, params=payload).json()
-            if "posts" in current_tag_resp:
-                self.__parse_each_post(current_tag_resp, posts, unique_set)
-            else:
-                logging.error(str("No Posts for the tag" + str(tag)))
+            each_tag_thread = threading.Thread(target=self.__process_tag,
+                                               args=(tag, posts, unique_set))
+            each_tag_thread.start()
+            request_threads.append(each_tag_thread)
+        # Wait for threads to complete processing requests
+        for thread in request_threads:
+            thread.join()
+
         return posts
+
+    # Private helper method that runs on independent thread and makes concurrent requests
+    def __process_tag(self, tag, posts, unique_set):
+        payload = {'tag': str(tag)}
+        current_tag_resp = requests.get(EXTERNAL_SERVER_ENDPOINT, params=payload).json()
+        if "posts" in current_tag_resp:
+            self.__parse_each_post(current_tag_resp, posts, unique_set)
+        else:
+            logging.error(str("No Posts for the tag" + str(tag)))
 
     # Private helper method to parse each post
     def __parse_each_post(self, current_tag_resp, posts, unique_set):
