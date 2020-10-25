@@ -10,6 +10,9 @@
 1. To Run unit tests first, setup the project using setup.sh and then run test.sh
 
 
+# Other
+I have deployed the app on heroku at : 
+
 ### Credits
 Thank you Hatchways team! Hope you find this project good. Please feel free to contact me anytime if you have any questions.<br/>
 Best,<br/>
