@@ -1,8 +1,8 @@
 # Blogs API Endpoint
 
 ## Setup
-1. Run the setup.sh bash script file to setup install pipenv and setup the project.
-2. Run the run.sh bash script file to start the API endpoint.
+1. Run the setup.sh bash script file to install pipenv and setup the project.
+2. Run the run.sh bash script file to start the API.
 3. If you have Intellij PyCharm you can just import the project. This Project was made in PyCharm.
 
 
