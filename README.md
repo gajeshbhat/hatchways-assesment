@@ -12,6 +12,7 @@
 
 # Other
 I have deployed the app on heroku at : https://hatchwaysapp.herokuapp.com/ . You can also run queries there.
+<br/>Example : https://hatchwaysapp.herokuapp.com/api/posts?tags=history,tech&sortBy=likes&direction=desc
 
 ### Credits
 Thank you Hatchways team! Hope you find this project good. Please feel free to contact me anytime if you have any questions.<br/>
