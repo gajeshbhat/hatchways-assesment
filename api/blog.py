@@ -4,6 +4,7 @@ import logging
 from api.errors import *
 from flask import request
 from flask_restful import Resource
+from functools import lru_cache
 
 # Hatchways Server Endpoint
 EXTERNAL_SERVER_ENDPOINT = 'https://api.hatchways.io/assessment/blog/posts'
@@ -16,6 +17,7 @@ SORTING_ORDER = ["asc", "desc"]
 # Blog Resource
 class Blog(Resource):
 
+    @lru_cache(maxsize=128)
     def get(self):
         tags_string = request.args.get("tags", None, str)
         sort_by_param = request.args.get("sortBy", "id")  # id is default
@@ -36,15 +38,14 @@ class Blog(Resource):
             posts = self.__get_posts(clean_tags)
             sorted_post_list = self.__sort_posts(posts, sort_by_param, post_sorting_order)
             final_resp_obj = {"posts": sorted_post_list}
-            logging.debug("Works!")
             return final_resp_obj, 200
 
         except Exception as e:
             logging.error(str(e))
-            return external_server_error, 503
+            return external_server_error, 400
 
     def post(self):
-        return {'success': False, 'message': 'POST Not Allowed'}, 405
+        return json.dumps({'success': False, 'message': 'POST Not Allowed'}), 405
 
     def __get_posts(self, params):
         posts = list()

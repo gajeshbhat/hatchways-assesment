@@ -9,6 +9,7 @@ verify_ssl = true
 flask = "*"
 flask-restful = "*"
 requests = "*"
+coverage = "*"
 
 [requires]
 python_version = "3.7"

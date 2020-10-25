@@ -1,11 +1,11 @@
 import json
 import unittest
 
-import requests
 from flask import Flask
 from flask_restful import Api
 from api.ping import Ping
 from api.blog import Blog
+from api.errors import wrong_sortby_input_error, sorting_order_error, no_tag_error
 
 
 class ApiTestPostFetch(unittest.TestCase):
@@ -17,55 +17,75 @@ class ApiTestPostFetch(unittest.TestCase):
         self.api = Api(self.app)
         self.api.add_resource(Ping, '/api/ping')
         self.api.add_resource(Blog, '/api/posts')
-        self.app.testing = True
         self.client = self.app.test_client
-        self.test_url_base = "https://api.hatchways.io/assessment/solution/posts"
 
-    def test_ping(self):
-        """Test API can ping the endpoint (GET request)"""
+    def test_ping_get(self):
         res = self.client().get('/api/ping')
         self.assertEqual(200, res.status_code)
         self.assertIn(json.dumps({"success": True}), json.dumps(json.loads(res.get_data(as_text=True))))
 
+    def test_ping_post(self):
+        res = self.client().post('/api/ping')
+        self.assertEqual(405, res.status_code)
+        self.assertIn(json.dumps({"success": False, 'message': 'POST Not Allowed on this Endpoint'}),
+                      json.dumps(json.loads(res.get_data(as_text=True))))
+
     def test_get_post(self):
-        """Test API endpoint posts (GET request)"""
         res = self.client().get('/api/posts?tags=history&sortBy=likes&direction=desc')
-        self.assertEqual(200, res.status_code)
-        expected = requests.get(self.test_url_base + "?tags=history&sortBy=likes&direction=desc").json()
+        expected = self.get_test_data('test_data/test_data_param_0.json')
+        actual = json.loads(res.get_data(as_text=True))
+        self.assertIn(json.dumps(expected), json.dumps(actual))
+
+    def test_post_posts(self):
+        res = self.client().post('/api/posts?tags=history&sortBy=likes&direction=desc')
+        self.assertEqual(405, res.status_code)
+        expected = json.dumps({'success': False, 'message': 'POST Not Allowed'})
         actual = json.loads(res.get_data(as_text=True))
         self.assertIn(json.dumps(expected), json.dumps(actual))
 
     def test_get_post_multiple_tags(self):
-        """Test API endpoint posts with multiple tags(GET request)"""
         res = self.client().get('/api/posts?tags=history,tech&sortBy=likes&direction=desc')
-        self.assertEqual(200, res.status_code)
-        expected = requests.get(self.test_url_base + "?tags=history,tech&sortBy=likes&direction=desc").json()
+        expected = self.get_test_data('test_data/test_data_param_1.json')
         actual = json.loads(res.get_data(as_text=True))
         self.assertIn(json.dumps(expected), json.dumps(actual))
 
     def test_get_post_no_tags(self):
-        """Test API endpoint posts with no tags(GET request)"""
         res = self.client().get('/api/posts')
         self.assertEqual(400, res.status_code)
-        expected = requests.get(self.test_url_base).json()
+        expected = no_tag_error
         actual = json.loads(res.get_data(as_text=True))
         self.assertIn(json.dumps(expected), json.dumps(actual))
 
     def test_get_post_just_tag(self):
-        """Test API endpoint posts with only tags(GET request)"""
         res = self.client().get('/api/posts?tags=history')
-        self.assertEqual(200, res.status_code)
-        expected = requests.get(self.test_url_base + "?tags=history").json()
+        expected = self.get_test_data('test_data/test_data_param_2.json')
         actual = json.loads(res.get_data(as_text=True))
         self.assertIn(json.dumps(expected), json.dumps(actual))
 
     def test_get_post_tag_no_sort_by(self):
-        """Test API endpoint posts with tags and not sort by key(GET request)"""
-        res = self.client().get('/api/posts?tags=history&direction=asc')
-        self.assertEqual(200, res.status_code)
-        expected = requests.get(self.test_url_base + "?tags=history&direction=asc").json()
+        res = self.client().get('/api/posts?tags=health&direction=asc')
+        expected = self.get_test_data('test_data/test_data_param_3.json')
         actual = json.loads(res.get_data(as_text=True))
         self.assertIn(json.dumps(expected), json.dumps(actual))
+
+    def test_sort_by_wrong(self):
+        res = self.client().get('/api/posts?tags=history&sortBy=name&direction=asc')
+        self.assertEqual(400, res.status_code)
+        expected = wrong_sortby_input_error
+        actual = json.loads(res.get_data(as_text=True))
+        self.assertIn(json.dumps(expected), json.dumps(actual))
+
+    def test_order_by_wrong(self):
+        res = self.client().get('/api/posts?tags=history&sortBy=id&direction=bsc')
+        self.assertEqual(400, res.status_code)
+        expected = sorting_order_error
+        actual = json.loads(res.get_data(as_text=True))
+        self.assertIn(json.dumps(expected), json.dumps(actual))
+
+    def get_test_data(self,file_path):
+        with open(file_path) as f:
+            data = json.load(f)
+        return data
 
     def tearDown(self):
         """teardown all initialized variables."""
