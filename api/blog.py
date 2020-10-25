@@ -87,7 +87,7 @@ class Blog(Resource):
 
     # Private helper method to sort post list
     def __sort_posts(self, post_list, sort_by, ordering):
-        is_reverse = False
+        is_reverse = False # Default Ascending
         if ordering == "desc":
             is_reverse = True
         sorted_post_list = sorted(post_list, key=lambda post: post[sort_by], reverse=is_reverse)
