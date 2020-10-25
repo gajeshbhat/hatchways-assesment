@@ -11,7 +11,7 @@
 
 
 # Other
-I have deployed the app on heroku at : 
+I have deployed the app on heroku at : https://hatchwaysapp.herokuapp.com/ . You can also run queries there.
 
 ### Credits
 Thank you Hatchways team! Hope you find this project good. Please feel free to contact me anytime if you have any questions.<br/>
