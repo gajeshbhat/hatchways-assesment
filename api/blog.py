@@ -7,6 +7,7 @@ from api.errors import *
 from flask import request
 from flask_restful import Resource
 from functools import lru_cache
+from api.status_codes import SUCCESSFUL_OK,BAD_REQUEST, METHOD_NOT_ALLOWED
 
 # Hatchways Server Endpoint
 EXTERNAL_SERVER_ENDPOINT = 'https://api.hatchways.io/assessment/blog/posts'
@@ -15,11 +16,14 @@ EXTERNAL_SERVER_ENDPOINT = 'https://api.hatchways.io/assessment/blog/posts'
 SORT_BY_OPTIONS = ["id", "reads", "likes", "popularity"]
 SORTING_ORDER = ["asc", "desc"]
 
+# Cache Max Size
+MAX_CACHE_SIZE = 128
+
 
 # Blog Resource
 class Blog(Resource):
 
-    @lru_cache(maxsize=128)
+    @lru_cache(maxsize=MAX_CACHE_SIZE)
     # @lru_cache is not ideal for Multiple workers for frameworks that use gunicorn, If given time I would use a a
     # central cache store like memcached to avoid misses. More :
     # https://krzysztofzuraw.com/blog/2017/gunicorn-lru-cache-pitfall
@@ -29,13 +33,13 @@ class Blog(Resource):
         post_sorting_order = request.args.get("direction", "asc")  # Ascending order by default
 
         if tags_string is None:
-            return no_tag_error, 400
+            return no_tag_error, BAD_REQUEST
 
         if sort_by_param not in SORT_BY_OPTIONS:
-            return wrong_sortby_input_error, 400
+            return wrong_sortby_input_error, BAD_REQUEST
 
         if post_sorting_order not in SORTING_ORDER:
-            return sorting_order_error, 400
+            return sorting_order_error, BAD_REQUEST
 
         clean_tags = tags_string.strip().lower().split(",")
 
@@ -43,14 +47,14 @@ class Blog(Resource):
             posts = self.__get_posts(clean_tags)
             sorted_post_list = self.__sort_posts(posts, sort_by_param, post_sorting_order)
             final_resp_obj = {"posts": sorted_post_list}
-            return final_resp_obj, 200
+            return final_resp_obj, SUCCESSFUL_OK
 
         except Exception as e:
             logging.error(str(e))
-            return external_server_error, 400
+            return external_server_error, BAD_REQUEST
 
     def post(self):
-        return json.dumps({'success': False, 'message': 'POST Not Allowed'}), 405
+        return json.dumps({'success': False, 'message': 'POST Not Allowed'}), METHOD_NOT_ALLOWED
 
     # Private helper method to get posts
     def __get_posts(self, params):
@@ -87,7 +91,7 @@ class Blog(Resource):
 
     # Private helper method to sort post list
     def __sort_posts(self, post_list, sort_by, ordering):
-        is_reverse = False # Default Ascending
+        is_reverse = False  # Default Ascending
         if ordering == "desc":
             is_reverse = True
         sorted_post_list = sorted(post_list, key=lambda post: post[sort_by], reverse=is_reverse)
