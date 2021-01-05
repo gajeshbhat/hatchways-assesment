@@ -5,7 +5,8 @@ from flask_restful import Api
 from api.ping import Ping
 from api.blog import Blog
 from api.errors import wrong_sortby_input_error, sorting_order_error, no_tag_error
-from api.status_codes import SUCCESSFUL_OK,METHOD_NOT_ALLOWED, BAD_REQUEST
+from api.status_codes import SUCCESSFUL_OK, METHOD_NOT_ALLOWED, BAD_REQUEST
+
 
 class ApiTestPostFetch(unittest.TestCase):
     """This class represents the a Blog API test case"""
@@ -81,7 +82,7 @@ class ApiTestPostFetch(unittest.TestCase):
         actual = json.loads(res.get_data(as_text=True))
         self.assertIn(json.dumps(expected), json.dumps(actual))
 
-    def get_test_data(self,file_path):
+    def get_test_data(self, file_path):
         with open(file_path) as f:
             data = json.load(f)
         return data
