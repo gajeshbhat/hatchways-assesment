@@ -42,8 +42,8 @@ run_tests:
 deploy_staging:
   stage: deploy
   script:
-    - apt-update -yq
-    - apt-get install -y ruby-dev
+    - apt update -yq
+    - apt install -y ruby-dev
     - gem install dpl
     - dpl --provider=heroku --app=hatchways-staging --api_key=$HEROKU_API_KEY
   environment:
@@ -55,8 +55,8 @@ deploy_staging:
 deploy_production:
   stage: deploy
   script:
-    - apt-update -yq
-    - apt-get install -y ruby-dev
+    - apt update -yq
+    - apt install -y ruby-dev
     - gem install dpl
     - dpl --provider=heroku --app=hatchways-production --api_key=$HEROKU_API_KEY
   environment:
