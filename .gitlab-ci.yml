@@ -25,7 +25,7 @@ stages:
 ver:
   stage: ver
   script:
-    - python --version
+    - python3 --version
     - whoami
 
 init:
@@ -37,7 +37,7 @@ run_tests:
   stage: tests
   script:
     - pip install -r requirements.txt
-    - python -m unittest api/tests.py
+    - python3 -m unittest api/tests.py
 
 deploy_staging:
   stage: deploy
