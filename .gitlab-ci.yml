@@ -42,10 +42,10 @@ run_tests:
 deploy_staging:
   stage: deploy
   script:
-    - git remote add heroku https://heroku:$HEROKU_API_KEY@git.heroku.com/hatchways-staging.git
-    - git add .&& git commit -m "Deploying to Staging Heroku"
-    - git push heroku master
-    - echo "Deployed to Staging Server https://hatchways-staging.herokuapp.com"
+    - apt-update -yq
+    - apt-get install -y ruby-dev
+    - gem install dpl
+    - dpl --provider=heroku --app=hatchways-staging --api_key=$HEROKU_API_KEY
   environment:
     name: staging
     url: https://hatchways-staging.herokuapp.com
@@ -55,9 +55,10 @@ deploy_staging:
 deploy_production:
   stage: deploy
   script:
-    - git remote add heroku https://heroku:$HEROKU_API_KEY@git.heroku.com/hatchways-production.git
-    - git push heroku master
-    - echo "Deployed Production Server https://hatchways-production.herokuapp.com"
+    - apt-update -yq
+    - apt-get install -y ruby-dev
+    - gem install dpl
+    - dpl --provider=heroku --app=hatchways-production --api_key=$HEROKU_API_KEY
   environment:
     name: production
     url : https://hatchways-production.herokuapp.com
