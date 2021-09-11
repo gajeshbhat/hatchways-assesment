@@ -2,10 +2,10 @@ import json
 import unittest
 from flask import Flask
 from flask_restful import Api
-from api.ping import Ping
-from api.blog import Blog
-from api.errors import wrong_sortby_input_error, sorting_order_error, no_tag_error
-from api.status_codes import SUCCESSFUL_OK, METHOD_NOT_ALLOWED, BAD_REQUEST
+from ping import Ping
+from blog import Blog
+from errors import wrong_sortby_input_error, sorting_order_error, no_tag_error
+from status_codes import SUCCESSFUL_OK, METHOD_NOT_ALLOWED, BAD_REQUEST
 
 
 class ApiTestPostFetch(unittest.TestCase):
