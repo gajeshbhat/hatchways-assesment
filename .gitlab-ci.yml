@@ -19,7 +19,7 @@ image: gajesh/build-tools:latest
 stages:
   - ver
   - init
-  - test
+  - tests
   - deploy
 
 ver:
