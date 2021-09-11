@@ -1,8 +1,6 @@
-# Install Pipenv if does not exists
-pip install pipenv
+# Create a Virtual Environment and activate it
+python3 -m venv venv
+source venv/bin/activate
 
-# Install dependencies from pipfile
-pipenv install
-
-# Move to pipenv shell
-pipenv shell
+# Install Python Packages
+pip install -r requirements.txt
