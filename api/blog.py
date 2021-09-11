@@ -3,11 +3,11 @@ import threading
 
 import requests
 import logging
-from errors import *
+from .errors import *
 from flask import request
 from flask_restful import Resource
 from functools import lru_cache
-from status_codes import SUCCESSFUL_OK,BAD_REQUEST, METHOD_NOT_ALLOWED
+from .status_codes import SUCCESSFUL_OK,BAD_REQUEST, METHOD_NOT_ALLOWED
 
 # Hatchways Server Endpoint
 EXTERNAL_SERVER_ENDPOINT = 'https://api.hatchways.io/assessment/blog/posts'
