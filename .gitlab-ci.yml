@@ -37,7 +37,8 @@ run_tests:
   stage: tests
   script:
     - pip install -r requirements.txt
-    - python3 -m unittest api/tests.py
+    - cd api
+    - python3 -m unittest tests.py
 
 deploy_staging:
   stage: deploy
