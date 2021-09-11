@@ -1,2 +1,3 @@
 # Run the unit tests on API
-python3 -m unittest api/tests.py
+cd api
+python3 -m unittest tests.py
