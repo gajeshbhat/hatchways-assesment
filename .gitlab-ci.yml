@@ -37,13 +37,13 @@ run_tests:
   stage: tests
   script:
     - pip install -r requirements.txt
-    - cd api
-    - python3 -m unittest tests.py
+    - bash test.sh
 
 deploy_staging:
   stage: deploy
   script:
     - git remote add heroku https://heroku:$HEROKU_API_KEY@git.heroku.com/hatchways-staging.git
+    - git add .&& git commit -m "Deploying to Staging Heroku"
     - git push heroku master
     - echo "Deployed to Staging Server https://hatchways-staging.herokuapp.com"
   environment:
