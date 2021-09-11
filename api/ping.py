@@ -1,5 +1,5 @@
 from flask_restful import Resource
-from .status_codes import SUCCESSFUL_OK, METHOD_NOT_ALLOWED
+from status_codes import SUCCESSFUL_OK, METHOD_NOT_ALLOWED
 
 
 # Ping Resource
