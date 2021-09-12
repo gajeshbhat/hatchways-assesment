@@ -25,7 +25,10 @@ stages:
 ver:
   stage: ver
   script:
-    - sudo apt install -y python3
+    - apt install -y python3
+    - apt update -yq
+    - apt install -y ruby-dev
+    - gem install dpl
     - python3 --version
     - whoami
 
