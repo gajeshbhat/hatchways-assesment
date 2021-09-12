@@ -62,6 +62,7 @@ deploy_staging:
     - apt install -y python3-pip
     - apt install -y ruby-dev
     - apt install -y git
+    - apt install -y curl
     - gem install dpl
     - dpl --provider=heroku --app=hatchways-staging --api_key=$HEROKU_API_KEY
   environment:
@@ -78,6 +79,7 @@ deploy_production:
     - apt install -y ruby-dev
     - gem install dpl
     - apt install -y git
+    - apt install -y curl
     - dpl --provider=heroku --app=hatchways-production --api_key=$HEROKU_API_KEY
   environment:
     name: production
