@@ -1,11 +1,12 @@
 import json
+import os
 import unittest
 from flask import Flask
 from flask_restful import Api
-from ping import Ping
-from blog import Blog
-from errors import wrong_sortby_input_error, sorting_order_error, no_tag_error
-from status_codes import SUCCESSFUL_OK, METHOD_NOT_ALLOWED, BAD_REQUEST
+from .ping import Ping
+from .blog import Blog
+from .errors import wrong_sortby_input_error, sorting_order_error, no_tag_error
+from .status_codes import SUCCESSFUL_OK, METHOD_NOT_ALLOWED, BAD_REQUEST
 
 
 class ApiTestPostFetch(unittest.TestCase):
@@ -32,7 +33,7 @@ class ApiTestPostFetch(unittest.TestCase):
 
     def test_get_post(self):
         res = self.client().get('/api/posts?tags=history&sortBy=likes&direction=desc')
-        expected = self.get_test_data('test_data/test_data_param_0.json')
+        expected = self.get_test_data('test_data_param_0.json')
         actual = json.loads(res.get_data(as_text=True))
         self.assertIn(json.dumps(expected), json.dumps(actual))
 
@@ -45,7 +46,7 @@ class ApiTestPostFetch(unittest.TestCase):
 
     def test_get_post_multiple_tags(self):
         res = self.client().get('/api/posts?tags=history,tech&sortBy=likes&direction=desc')
-        expected = self.get_test_data('test_data/test_data_param_1.json')
+        expected = self.get_test_data('test_data_param_1.json')
         actual = json.loads(res.get_data(as_text=True))
         self.assertIn(json.dumps(expected), json.dumps(actual))
 
@@ -58,13 +59,13 @@ class ApiTestPostFetch(unittest.TestCase):
 
     def test_get_post_just_tag(self):
         res = self.client().get('/api/posts?tags=history')
-        expected = self.get_test_data('test_data/test_data_param_2.json')
+        expected = self.get_test_data('test_data_param_2.json')
         actual = json.loads(res.get_data(as_text=True))
         self.assertIn(json.dumps(expected), json.dumps(actual))
 
     def test_get_post_tag_no_sort_by(self):
         res = self.client().get('/api/posts?tags=health&direction=asc')
-        expected = self.get_test_data('test_data/test_data_param_3.json')
+        expected = self.get_test_data('test_data_param_3.json')
         actual = json.loads(res.get_data(as_text=True))
         self.assertIn(json.dumps(expected), json.dumps(actual))
 
@@ -83,7 +84,7 @@ class ApiTestPostFetch(unittest.TestCase):
         self.assertIn(json.dumps(expected), json.dumps(actual))
 
     def get_test_data(self, file_path):
-        with open(file_path) as f:
+        with open(os.getcwd() + '/api/test_data/' + file_path) as f:
             data = json.load(f)
         return data
 

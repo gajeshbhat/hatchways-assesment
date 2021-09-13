@@ -17,72 +17,41 @@
 image: ubuntu:20.04
 
 stages:
-  - ver
-  - init
-  - tests
-  - deploy
-
-ver:
-  stage: ver
-  script:
-    - apt update -yq
-    - apt install -y python3-pip
-    - apt install -y ruby-dev
-    - gem install dpl
-    - python3 --version
-    - ruby --version
-
-init:
-  stage: init
-  script:
-    - apt update -yq
-    - apt install -y python3-pip
-    - apt install -y ruby-dev
-    - gem install dpl
-    - python3 --version
-    - ruby --version
-    - pip install -r requirements.txt
+  - Tests
+  - Deploy
 
 run_tests:
-  stage: tests
+  stage: Tests
   script:
     - apt update -yq
-    - apt install -y python3-pip
-    - apt install -y ruby-dev
-    - gem install dpl
+    - apt install -y python3-pip ruby-dev
     - python3 --version
     - ruby --version
     - pip install -r requirements.txt
     - bash test.sh
 
 deploy_staging:
-  stage: deploy
+  stage: Deploy
   script:
     - apt update -yq
-    - apt install -y python3-pip
-    - apt install -y ruby-dev
-    - apt install -y git
-    - apt install -y curl
+    - apt install -y python3-pip ruby-dev git curl
     - gem install dpl
     - dpl --provider=heroku --app=hatchways-staging --api_key=$HEROKU_API_KEY
   environment:
-    name: staging
+    name: Staging
     url: https://hatchways-staging.herokuapp.com
   only:
     - master
 
 deploy_production:
-  stage: deploy
+  stage: Deploy
   script:
     - apt update -yq
-    - apt install -y python3-pip
-    - apt install -y ruby-dev
+    - apt install -y python3-pip ruby-dev git curl
     - gem install dpl
-    - apt install -y git
-    - apt install -y curl
     - dpl --provider=heroku --app=hatchways-production --api_key=$HEROKU_API_KEY
   environment:
-    name: production
+    name: Production
     url : https://hatchways-production.herokuapp.com
   when: manual
   only:
