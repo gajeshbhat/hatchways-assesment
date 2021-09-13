@@ -1,10 +1,10 @@
 from flask_restful import Resource
 from .status_codes import SUCCESSFUL_OK, METHOD_NOT_ALLOWED
-
+from flasgger import swag_from
 
 # Ping Resource
 class Ping(Resource):
-
+    @swag_from('../api_swagger_spec/Ping.yaml', methods=['GET'])
     def get(self):
         return {"success": True}, SUCCESSFUL_OK
 

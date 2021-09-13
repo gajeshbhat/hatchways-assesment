@@ -1,0 +1,19 @@
+Ping Hatchways Blog
+---
+tags:
+  - Blog
+parameters:
+  - in: path
+    name: None
+    type: None
+    required: false
+responses:
+  200:
+    description: Query for Posts with various filters..
+    schema:
+      id: ping_get
+      properties:
+        success:
+          type: string
+          description: True means server is up and running else false.
+          default: 'True'

@@ -8,6 +8,7 @@ from flask import request
 from flask_restful import Resource
 from functools import lru_cache
 from .status_codes import SUCCESSFUL_OK,BAD_REQUEST, METHOD_NOT_ALLOWED
+from flasgger import swag_from
 
 # Hatchways Server Endpoint
 EXTERNAL_SERVER_ENDPOINT = 'https://api.hatchways.io/assessment/blog/posts'
@@ -27,6 +28,7 @@ class Blog(Resource):
     # @lru_cache is not ideal for Multiple workers for frameworks that use gunicorn, If given time I would use a a
     # central cache store like memcached to avoid misses. More :
     # https://krzysztofzuraw.com/blog/2017/gunicorn-lru-cache-pitfall
+    @swag_from('../api_swagger_spec/Blog_get.yaml', methods=['GET'])
     def get(self):
         tags_string = request.args.get("tags", None, str)
         sort_by_param = request.args.get("sortBy", "id")  # id is default
